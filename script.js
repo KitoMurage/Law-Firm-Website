@@ -5,6 +5,7 @@ new Swiper('.card-wrapper', {
   // If we need pagination
   pagination: {
     el: '.swiper-pagination',
+    clickable: true,
   },
 
   // Navigation arrows
@@ -89,4 +90,19 @@ if (display && navItems.length > 0) {
     });
   });
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+  const toggleButton = document.getElementById("menu-toggle");
+  const navLinks = document.getElementById("nav-links");
+
+  toggleButton.addEventListener("click", function () {
+    navLinks.classList.toggle("active");
+  });
+});
+
+document.querySelectorAll("#nav-links a").forEach(link => {
+  link.addEventListener("click", () => {
+    document.getElementById("nav-links").classList.remove("active");
+  });
+});
 
