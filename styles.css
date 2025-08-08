@@ -637,6 +637,17 @@ form button:hover {
   background-color: #006666;
 }
 
+.publications.empty {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.no-publications-msg {
+  font-size: 1.5rem;
+  color: #555;
+}
+
+
 /* Responsive */
 @media (max-width: 768px) {
   .publication {
@@ -647,4 +658,22 @@ form button:hover {
   .publication-image-wrapper {
     height: auto;
   }
+}
+
+/* Only apply to publications page */
+body.publications-page,
+body.publications-page html {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body.publications-page .page-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+body.publications-page .content {
+  flex: 1;
 }
