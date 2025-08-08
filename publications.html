@@ -8,16 +8,17 @@
   <script src="https://kit.fontawesome.com/6d55c8f183.js" crossorigin="anonymous"></script>
   <link rel="icon" type="image/svg+xml" href="images/favicon.svg" />
 </head>
-<body>
-
+<body class="publications-page">
+<div class="page-wrapper">
   <header>
-    <div class="logo"><a href="index.html"><img src="images/LOGO (Reverse).png" alt="Logo" class="logo-img" /></a></div>
+    <div class="logo"><a href="index.html"><img src="images/LOGO (Reverse).png" alt="Firm Logo" class="logo-img"></a></div>
     <nav>
-      <ul>
+      <button class="menu-toggle" id="menu-toggle">&#9776;</button>
+      <ul id="nav-links">
         <li><a href="index.html">Home</a></li>
         <li><a href="index.html#about">About</a></li>
         <li><a href="index.html#services">Practice Areas</a></li>
-        <li><a href="publications.html" class="active">Publications</a></li>
+        <li><a href="publications.html">Publications</a></li>
         <li><a href="index.html#contact">Contact</a></li>
       </ul>
     </nav>
@@ -29,9 +30,13 @@
 </section>
 
 <section class="content">
+    <div class="publications empty">
+    <p class="no-publications-msg">No publications have been posted yet. Please check back later.</p>
+  </div>
+  <!-- Publication Card 1 
   <div class="publications">
 
-    <!-- Publication Card 1 -->
+    
     <div class="publication">
       <div class="publication-image-wrapper">
         <img src="images/grow.jpeg" alt="Climate Justice Cover" class="publication-image">
@@ -45,7 +50,7 @@
       </div>
     </div>
 
-    <!-- Publication Card 2 -->
+   
     <div class="publication">
       <div class="publication-image-wrapper">
         <img src="images/house.jpeg" alt="Land Rights" class="publication-image">
@@ -59,7 +64,7 @@
       </div>
     </div>
 
-    <!-- Publication Card 3 -->
+    
     <div class="publication">
       <div class="publication-image-wrapper">
         <img src="images/woman.jpeg" alt="Rights Advocacy" class="publication-image">
@@ -74,12 +79,15 @@
     </div>
 
   </div>
+  -->
 </section>
 
 
   <footer>
     <p>&copy; 2025 Wambui EK Law Advocates. All rights reserved.</p>
   </footer>
-
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
