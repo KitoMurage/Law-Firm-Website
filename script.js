@@ -106,3 +106,15 @@ document.querySelectorAll("#nav-links a").forEach(link => {
   });
 });
 
+// Team bio toggle
+document.querySelectorAll('.toggle-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const expanded = btn.getAttribute('aria-expanded') === 'true';
+    const desc = btn.nextElementSibling;
+    btn.setAttribute('aria-expanded', String(!expanded));
+    btn.textContent = expanded ? 'View Profile' : 'Hide Profile';
+    desc.hidden = expanded;
+  });
+});
+
+
