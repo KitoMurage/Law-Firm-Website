@@ -34,14 +34,13 @@ const infoContent = {
     <h3>Vision Statement</h3>
 
     <p>
-      <strong>Transforming the justice experience for all</strong> through innovative, ethical, and inclusive legal practice
-      that promotes societal impact and transformative change in the actualization of human rights,
-      environmental sustainability, and climate justice.
+      <strong>Transforming the justice experience for all</strong> through progressive, ethical, and inclusive legal
+practice that promotes societal impact and transformative change.
     </p>
     <p>
-      We strive to be the region’s leading law firm, recognized for our commitment to justice, excellence,
-      and positive societal change, inspiring a just and equitable society where rights are upheld,
-      and communities thrive.
+ We strive to be the region’s
+leading law firm, recognized for our commitment to justice, excellence, and positive societal
+change, inspiring a just and equitable society where rights are upheld, and communities thrive
     </p>
   `,
   mission: `
@@ -116,5 +115,6 @@ document.querySelectorAll('.toggle-btn').forEach(btn => {
     desc.hidden = expanded;
   });
 });
+
 
 
