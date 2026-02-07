@@ -771,7 +771,7 @@ body.publications-page .content {
 /* Grid: 2 columns on desktop, 1 column on phones */
 .home-team .team-grid.two {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1.25rem;
 }
 @media (max-width: 900px) {
@@ -812,3 +812,4 @@ body.publications-page .content {
 @media (max-width: 360px) {
   .member-desc { font-size: 0.95rem; }
 }
+
