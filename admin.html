@@ -5,19 +5,36 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Advocate Dashboard | Wambui EK Law</title>
   <link rel="stylesheet" href="styles.css">
+  <script src="https://kit.fontawesome.com/6d55c8f183.js" crossorigin="anonymous"></script>
   <style>
-    .admin-container { max-width: 600px; margin: 100px auto; padding: 2rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 8px; background: #fff; }
+    /* Admin Navigation Styles */
+    .admin-header { background-color: #008080; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; color: white; }
+    .admin-header a { color: white; font-weight: bold; text-decoration: none; font-size: 0.95rem; }
+    .admin-header a:hover { color: #c7f8f8; text-decoration: underline; }
+    
+    .admin-container { max-width: 650px; margin: 40px auto; padding: 2rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 8px; background: #fff; }
     .hidden { display: none !important; }
-    .logout-btn { background-color: #cc0000; float: right; padding: 0.5rem 1rem; color: white; border: none; border-radius: 4px; cursor: pointer; }
-    .admin-container form input, .admin-container form textarea { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; display: block; font-family: inherit; }
-    .admin-container form button { background-color: #008080; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; width: 100%; font-size: 16px; }
+    .logout-btn { background-color: #cc0000; padding: 0.5rem 1rem; color: white; border: none; border-radius: 4px; cursor: pointer; }
+    
+    .admin-container form input[type="text"], .admin-container form input[type="email"], .admin-container form input[type="password"], .admin-container form textarea { width: 100%; padding: 10px; margin: 10px 0 20px 0; border: 1px solid #ccc; border-radius: 4px; display: block; font-family: inherit; }
+    .admin-container form label { font-weight: bold; color: #008080; font-size: 0.9rem; display: block; margin-top: 15px; }
+    
+    .admin-container form button { background-color: #008080; color: white; padding: 12px 20px; border: none; border-radius: 4px; cursor: pointer; width: 100%; font-size: 16px; margin-top: 10px;}
     .admin-container form button:hover { opacity: 0.9; }
   </style>
 </head>
-<body>
+<body style="background-color: #f7fbfb;">
+
+  <!-- Added Navigation Bar -->
+  <header class="admin-header">
+    <a href="index.html"><i class="fa-solid fa-arrow-left"></i> Back to Main Site</a>
+    <a href="publications.html">View Live Publications <i class="fa-solid fa-arrow-right"></i></a>
+  </header>
+
   <div class="admin-container">
+    <!-- LOGIN FORM -->
     <div id="login-section">
-      <h2>Advocate Login</h2>
+      <h2 style="color: #008080;">Advocate Login</h2>
       <form id="login-form" onsubmit="return false;">
         <input type="email" id="login-email" placeholder="Email" required>
         <input type="password" id="login-password" placeholder="Password" required>
@@ -26,18 +43,33 @@
       <p id="login-error" style="color: red; margin-top: 10px;"></p>
     </div>
 
+    <!-- PUBLISH FORM -->
     <div id="admin-section" class="hidden">
-      <button id="btn-logout" class="logout-btn">Logout</button>
-      <h2>Publish New Article</h2>
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 20px;">
+        <h2 style="color: #008080; margin: 0;">Publish New Article</h2>
+        <button id="btn-logout" class="logout-btn">Logout</button>
+      </div>
+      
+      <!-- Updated Form Labels for Microsoft Workflow -->
       <form id="publish-form" onsubmit="return false;">
-        <input type="text" id="post-title" placeholder="Article Title" required>
-        <input type="text" id="post-author" placeholder="Author Name (e.g., Dr. Elizabeth Wambui Kimani-Murage)" required>
-        <input type="text" id="post-image" placeholder="Image Name/URL (e.g., images/house.jpeg or images/woman.jpeg)">
-        <textarea id="post-content" placeholder="Write the article description/summary here..." rows="6" required></textarea>
-        <input type="text" id="post-link" placeholder="Link to full document/PDF (e.g., documents/brief.pdf)">
+        <label>Article Title</label>
+        <input type="text" id="post-title" placeholder="e.g., Understanding Climate Justice" required>
+        
+        <label>Author Name</label>
+        <input type="text" id="post-author" placeholder="e.g., Barnabas Tanui" required>
+        
+        <label>Cover Image Link (Public URL)</label>
+        <input type="text" id="post-image" placeholder="Paste image URL here..." required>
+        
+        <label>Article Summary / Excerpt</label>
+        <textarea id="post-content" placeholder="Write a short summary that appears on the card..." rows="5" required></textarea>
+        
+        <label>Full Article Document (Link to OneDrive / SharePoint)</label>
+        <input type="text" id="post-link" placeholder="Paste OneDrive 'Anyone with the link' URL here...">
+        
         <button id="btn-publish">Publish Live</button>
       </form>
-      <p id="publish-status" style="color: green; margin-top: 10px; font-weight: bold;"></p>
+      <p id="publish-status" style="color: green; margin-top: 15px; font-weight: bold; text-align: center;"></p>
     </div>
   </div>
 
@@ -46,7 +78,6 @@
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    // Your exact web app's Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyBByojxbcXlEEFA6u4JT_WzKcUrvnK0yFg",
       authDomain: "wambui-ek-law.firebaseapp.com",
@@ -57,7 +88,6 @@
       measurementId: "G-NYTXG0RB1Z"
     };
 
-    // Initialize Services
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
@@ -65,7 +95,6 @@
     const loginSection = document.getElementById('login-section');
     const adminSection = document.getElementById('admin-section');
     
-    // Auth Watcher
     onAuthStateChanged(auth, (user) => {
       if (user) {
         loginSection.classList.add('hidden');
@@ -76,44 +105,35 @@
       }
     });
 
-    // Login Handle
     document.getElementById('btn-login').addEventListener('click', () => {
       const email = document.getElementById('login-email').value;
       const password = document.getElementById('login-password').value;
-      document.getElementById('login-error').innerText = "";
-      
       signInWithEmailAndPassword(auth, email, password)
-        .catch(err => {
-          document.getElementById('login-error').innerText = "Login failed: " + err.message;
-        });
+        .catch(err => document.getElementById('login-error').innerText = "Login failed: " + err.message);
     });
 
-    // Logout Handle
-    document.getElementById('btn-logout').addEventListener('click', () => {
-      signOut(auth);
-    });
+    document.getElementById('btn-logout').addEventListener('click', () => signOut(auth));
 
-    // Submit Post Handle
     document.getElementById('btn-publish').addEventListener('click', async () => {
       const title = document.getElementById('post-title').value;
       const author = document.getElementById('post-author').value;
-      const image = document.getElementById('post-image').value || 'images/grow.jpeg';
+      const image = document.getElementById('post-image').value;
       const content = document.getElementById('post-content').value;
       const link = document.getElementById('post-link').value || '#';
       const statusText = document.getElementById('publish-status');
 
-      if (!title || !author || !content) return;
+      if (!title || !author || !content || !image) {
+        statusText.style.color = "red";
+        statusText.innerText = "Please fill in all required fields.";
+        return;
+      }
 
       statusText.style.color = "orange";
       statusText.innerText = "Publishing...";
 
       try {
         await addDoc(collection(db, "publications"), {
-          title,
-          author,
-          image,
-          content,
-          link,
+          title, author, image, content, link,
           createdAt: serverTimestamp()
         });
         statusText.style.color = "green";
@@ -121,7 +141,7 @@
         document.getElementById('publish-form').reset();
       } catch (error) {
         statusText.style.color = "red";
-        statusText.innerText = "Error saving post: " + error.message;
+        statusText.innerText = "Error: " + error.message;
       }
     });
   </script>
