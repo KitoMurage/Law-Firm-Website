@@ -30,56 +30,9 @@
 </section>
 
 <section class="content">
-    <div class="publications empty">
-    <p class="no-publications-msg">No publications have been posted yet. Please check back later.</p>
+  <div class="publications" id="live-publications-container">
+    <p style="text-align: center; font-size: 1.2rem; color: #666; width: 100%;">Loading latest publications...</p>
   </div>
-  <!-- Publication Card 1 
-  <div class="publications">
-
-    
-    <div class="publication">
-      <div class="publication-image-wrapper">
-        <img src="images/grow.jpeg" alt="Climate Justice Cover" class="publication-image">
-      </div>
-      <div class="publication-content">
-        <h2>Publication #1</h2>
-        <p><strong>Author:</strong> Dr. Elizabeth Wambui Kimani-Murage</p>
-        <p><strong>Published:</strong> July 2025</p>
-        <p>This article explores...</p>
-        <a href="documents/breif.pdf" target="_blank" class="btn">Read More</a>
-      </div>
-    </div>
-
-   
-    <div class="publication">
-      <div class="publication-image-wrapper">
-        <img src="images/house.jpeg" alt="Land Rights" class="publication-image">
-      </div>
-      <div class="publication-content">
-        <h2>Publication #2</h2>
-        <p><strong>Author:</strong> Dr. Elizabeth Wambui Kimani-Murage</p>
-        <p><strong>Published:</strong> July 2025</p>
-        <p>This article explores...</p>
-        <a href="documents/breif.pdf" target="_blank" class="btn">Read More</a>
-      </div>
-    </div>
-
-    
-    <div class="publication">
-      <div class="publication-image-wrapper">
-        <img src="images/woman.jpeg" alt="Rights Advocacy" class="publication-image">
-      </div>
-      <div class="publication-content">
-        <h2>Publication #3</h2>
-        <p><strong>Author:</strong> Dr. Elizabeth Wambui Kimani-Murage</p>
-        <p><strong>Published:</strong> July 2025</p>
-        <p>This article explores...</p>
-        <a href="documents/breif.pdf" target="_blank" class="btn">Read More</a>
-      </div>
-    </div>
-
-  </div>
-  -->
 </section>
 
 
@@ -89,5 +42,67 @@
   </div>
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
   <script src="script.js"></script>
+  
+
+  <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getFirestore, collection, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+  // Web app's Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyBByojxbcXlEEFA6u4JT_WzKcUrvnK0yFg",
+    authDomain: "wambui-ek-law.firebaseapp.com",
+    projectId: "wambui-ek-law",
+    storageBucket: "wambui-ek-law.firebasestorage.app",
+    messagingSenderId: "740875289878",
+    appId: "1:740875289878:web:9e96de0159dd06070a7c37",
+    measurementId: "G-NYTXG0RB1Z"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const container = document.getElementById('live-publications-container');
+
+  // Query database in real-time, sorting by descending time
+  const q = query(collection(db, "publications"), orderBy("createdAt", "desc"));
+
+  onSnapshot(q, (snapshot) => {
+    if (snapshot.empty) {
+      container.innerHTML = `<p style="text-align: center; color: #666; width: 100%;">No publications posted yet.</p>`;
+      return;
+    }
+
+    let htmlContent = '';
+    snapshot.forEach((doc) => {
+      const data = doc.data();
+      
+      // Compute cleanly formatted date string
+      let dateString = "Recently";
+      if (data.createdAt) {
+        const date = data.createdAt.toDate();
+        dateString = date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+      }
+
+      // Generate HTML matching your exact CSS block selectors
+      htmlContent += `
+        <div class="publication">
+          <div class="publication-image-wrapper">
+            <img src="${data.image}" alt="${data.title}" class="publication-image">
+          </div>
+          <div class="publication-content">
+            <h2>${data.title}</h2>
+            <p><strong>Author:</strong> ${data.author}</p>
+            <p><strong>Published:</strong> ${dateString}</p>
+            <p>${data.content}</p>
+            <a href="${data.link}" target="_blank" class="btn">Read More</a>
+          </div>
+        </div>
+      `;
+    });
+
+    container.innerHTML = htmlContent;
+  });
+</script>
+
 </body>
 </html>

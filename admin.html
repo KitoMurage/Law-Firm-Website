@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Advocate Dashboard | Wambui EK Law</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .admin-container { max-width: 600px; margin: 100px auto; padding: 2rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 8px; background: #fff; }
+    .hidden { display: none !important; }
+    .logout-btn { background-color: #cc0000; float: right; padding: 0.5rem 1rem; color: white; border: none; border-radius: 4px; cursor: pointer; }
+    .admin-container form input, .admin-container form textarea { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; display: block; font-family: inherit; }
+    .admin-container form button { background-color: #008080; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; width: 100%; font-size: 16px; }
+    .admin-container form button:hover { opacity: 0.9; }
+  </style>
+</head>
+<body>
+  <div class="admin-container">
+    <div id="login-section">
+      <h2>Advocate Login</h2>
+      <form id="login-form" onsubmit="return false;">
+        <input type="email" id="login-email" placeholder="Email" required>
+        <input type="password" id="login-password" placeholder="Password" required>
+        <button id="btn-login">Login</button>
+      </form>
+      <p id="login-error" style="color: red; margin-top: 10px;"></p>
+    </div>
+
+    <div id="admin-section" class="hidden">
+      <button id="btn-logout" class="logout-btn">Logout</button>
+      <h2>Publish New Article</h2>
+      <form id="publish-form" onsubmit="return false;">
+        <input type="text" id="post-title" placeholder="Article Title" required>
+        <input type="text" id="post-author" placeholder="Author Name (e.g., Dr. Elizabeth Wambui Kimani-Murage)" required>
+        <input type="text" id="post-image" placeholder="Image Name/URL (e.g., images/house.jpeg or images/woman.jpeg)">
+        <textarea id="post-content" placeholder="Write the article description/summary here..." rows="6" required></textarea>
+        <input type="text" id="post-link" placeholder="Link to full document/PDF (e.g., documents/brief.pdf)">
+        <button id="btn-publish">Publish Live</button>
+      </form>
+      <p id="publish-status" style="color: green; margin-top: 10px; font-weight: bold;"></p>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    // Your exact web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyBByojxbcXlEEFA6u4JT_WzKcUrvnK0yFg",
+      authDomain: "wambui-ek-law.firebaseapp.com",
+      projectId: "wambui-ek-law",
+      storageBucket: "wambui-ek-law.firebasestorage.app",
+      messagingSenderId: "740875289878",
+      appId: "1:740875289878:web:9e96de0159dd06070a7c37",
+      measurementId: "G-NYTXG0RB1Z"
+    };
+
+    // Initialize Services
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const loginSection = document.getElementById('login-section');
+    const adminSection = document.getElementById('admin-section');
+    
+    // Auth Watcher
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        loginSection.classList.add('hidden');
+        adminSection.classList.remove('hidden');
+      } else {
+        loginSection.classList.remove('hidden');
+        adminSection.classList.add('hidden');
+      }
+    });
+
+    // Login Handle
+    document.getElementById('btn-login').addEventListener('click', () => {
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+      document.getElementById('login-error').innerText = "";
+      
+      signInWithEmailAndPassword(auth, email, password)
+        .catch(err => {
+          document.getElementById('login-error').innerText = "Login failed: " + err.message;
+        });
+    });
+
+    // Logout Handle
+    document.getElementById('btn-logout').addEventListener('click', () => {
+      signOut(auth);
+    });
+
+    // Submit Post Handle
+    document.getElementById('btn-publish').addEventListener('click', async () => {
+      const title = document.getElementById('post-title').value;
+      const author = document.getElementById('post-author').value;
+      const image = document.getElementById('post-image').value || 'images/grow.jpeg';
+      const content = document.getElementById('post-content').value;
+      const link = document.getElementById('post-link').value || '#';
+      const statusText = document.getElementById('publish-status');
+
+      if (!title || !author || !content) return;
+
+      statusText.style.color = "orange";
+      statusText.innerText = "Publishing...";
+
+      try {
+        await addDoc(collection(db, "publications"), {
+          title,
+          author,
+          image,
+          content,
+          link,
+          createdAt: serverTimestamp()
+        });
+        statusText.style.color = "green";
+        statusText.innerText = "Published successfully and live!";
+        document.getElementById('publish-form').reset();
+      } catch (error) {
+        statusText.style.color = "red";
+        statusText.innerText = "Error saving post: " + error.message;
+      }
+    });
+  </script>
+</body>
+</html>
