@@ -83,6 +83,13 @@
         dateString = date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
       }
 
+      // Conditionally create the Read More button
+      // It checks if the link exists, is not empty, and is not the default "#"
+      let readMoreButton = '';
+      if (data.link && data.link.trim() !== '' && data.link.trim() !== '#') {
+        readMoreButton = `<a href="${data.link}" target="_blank" class="btn">Read More</a>`;
+      }
+
       // Generate HTML matching your exact CSS block selectors
       htmlContent += `
         <div class="publication">
@@ -94,7 +101,7 @@
             <p><strong>Author:</strong> ${data.author}</p>
             <p><strong>Published:</strong> ${dateString}</p>
             <p>${data.content}</p>
-            <a href="${data.link}" target="_blank" class="btn">Read More</a>
+            ${readMoreButton} 
           </div>
         </div>
       `;
