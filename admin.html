@@ -193,7 +193,7 @@
       document.getElementById('form-title').innerText = "Edit Publication";
       document.getElementById('post-title').value = data.title;
       document.getElementById('post-author').value = data.author;
-      document.getElementById('post-image').value = data.image === 'images/logo.jpg' ? '' : data.image; // Hide default link during edit
+      document.getElementById('post-image').value = data.image === 'images/Favicon.png' ? '' : data.image; // Hide default link during edit
       document.getElementById('post-content').value = data.content;
       document.getElementById('post-link').value = data.link === '#' ? '' : data.link;
       
@@ -220,7 +220,7 @@
       
       // OPTIONAL LOGIC: If blank, assign defaults
       let image = document.getElementById('post-image').value;
-      if (!image.trim()) { image = 'images/logo.jpg'; }
+      if (!image.trim()) { image = 'images/Favicon.png'; }
       
       let link = document.getElementById('post-link').value;
       if (!link.trim()) { link = '#'; }
