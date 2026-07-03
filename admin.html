@@ -7,76 +7,101 @@
   <link rel="stylesheet" href="styles.css">
   <script src="https://kit.fontawesome.com/6d55c8f183.js" crossorigin="anonymous"></script>
   <style>
-    /* Admin Navigation Styles */
-    .admin-header { background-color: #008080; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; color: white; }
+    /* Dashboard Specific Styles */
+    body { background-color: #f0f4f4; margin: 0; padding: 0; }
+    .admin-header { background-color: #008080; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
     .admin-header a { color: white; font-weight: bold; text-decoration: none; font-size: 0.95rem; }
-    .admin-header a:hover { color: #c7f8f8; text-decoration: underline; }
+    .admin-header a:hover { text-decoration: underline; }
+    .logout-btn { background-color: #cc0000; padding: 0.5rem 1rem; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
     
-    .admin-container { max-width: 650px; margin: 40px auto; padding: 2rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 8px; background: #fff; }
+    /* Login Screen */
+    .login-container { max-width: 400px; margin: 100px auto; padding: 2rem; background: #fff; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .login-container input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+    
+    /* Dashboard Layout */
+    .dashboard-container { display: flex; flex-wrap: wrap; gap: 2rem; padding: 2rem; max-width: 1400px; margin: auto; }
+    .dashboard-panel { background: #fff; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); flex: 1; min-width: 300px; }
+    
+    .dashboard-panel h2 { color: #008080; margin-top: 0; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 20px; }
+    .dashboard-panel label { font-weight: bold; color: #333; display: block; margin-top: 15px; font-size: 0.9rem; }
+    .dashboard-panel input, .dashboard-panel textarea { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-family: inherit; }
+    
+    .btn-action { background-color: #008080; color: white; padding: 12px 20px; border: none; border-radius: 4px; cursor: pointer; width: 100%; font-size: 16px; margin-top: 20px; font-weight: bold; }
+    .btn-action:hover { opacity: 0.9; }
+    
+    /* List Styles */
+    .pub-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid #eee; background: #f9f9f9; margin-bottom: 10px; border-radius: 4px; }
+    .pub-title { font-weight: bold; color: #333; }
+    .action-buttons button { padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; margin-left: 5px; }
+    .btn-edit { background-color: #f39c12; color: white; }
+    .btn-delete { background-color: #e74c3c; color: white; }
+    
     .hidden { display: none !important; }
-    .logout-btn { background-color: #cc0000; padding: 0.5rem 1rem; color: white; border: none; border-radius: 4px; cursor: pointer; }
-    
-    .admin-container form input[type="text"], .admin-container form input[type="email"], .admin-container form input[type="password"], .admin-container form textarea { width: 100%; padding: 10px; margin: 10px 0 20px 0; border: 1px solid #ccc; border-radius: 4px; display: block; font-family: inherit; }
-    .admin-container form label { font-weight: bold; color: #008080; font-size: 0.9rem; display: block; margin-top: 15px; }
-    
-    .admin-container form button { background-color: #008080; color: white; padding: 12px 20px; border: none; border-radius: 4px; cursor: pointer; width: 100%; font-size: 16px; margin-top: 10px;}
-    .admin-container form button:hover { opacity: 0.9; }
   </style>
 </head>
-<body style="background-color: #f7fbfb;">
+<body>
 
-  <!-- Added Navigation Bar -->
   <header class="admin-header">
     <a href="index.html"><i class="fa-solid fa-arrow-left"></i> Back to Main Site</a>
-    <a href="publications.html">View Live Publications <i class="fa-solid fa-arrow-right"></i></a>
+    <div>
+      <a href="publications.html" style="margin-right: 20px;">View Live Publications <i class="fa-solid fa-arrow-right"></i></a>
+      <button id="btn-logout" class="logout-btn hidden">Logout</button>
+    </div>
   </header>
 
-  <div class="admin-container">
-    <!-- LOGIN FORM -->
-    <div id="login-section">
-      <h2 style="color: #008080;">Advocate Login</h2>
-      <form id="login-form" onsubmit="return false;">
-        <input type="email" id="login-email" placeholder="Email" required>
-        <input type="password" id="login-password" placeholder="Password" required>
-        <button id="btn-login">Login</button>
+  <!-- LOGIN SECTION -->
+  <div id="login-section" class="login-container">
+    <h2 style="color: #008080; text-align: center;">Advocate Login</h2>
+    <form id="login-form" onsubmit="return false;">
+      <input type="email" id="login-email" placeholder="Email" required>
+      <input type="password" id="login-password" placeholder="Password" required>
+      <button id="btn-login" class="btn-action">Login</button>
+    </form>
+    <p id="login-error" style="color: red; text-align: center; margin-top: 10px;"></p>
+  </div>
+
+  <!-- DASHBOARD SECTION -->
+  <div id="admin-section" class="dashboard-container hidden">
+    
+    <!-- Left Column: Form -->
+    <div class="dashboard-panel" style="flex: 1;">
+      <h2 id="form-title">Create New Publication</h2>
+      <form id="publish-form" onsubmit="return false;">
+        <label>Article Title *</label>
+        <input type="text" id="post-title" required>
+        
+        <label>Author Name *</label>
+        <input type="text" id="post-author" required>
+        
+        <label>Cover Image (Optional - Paste Google Drive Link or Leave Blank)</label>
+        <input type="text" id="post-image" placeholder="Will use default image if left blank">
+        
+        <label>Article Summary / Excerpt *</label>
+        <textarea id="post-content" rows="6" required></textarea>
+        
+        <label>Full Article PDF (Optional - Paste Google Drive Link)</label>
+        <input type="text" id="post-link" placeholder="e.g., https://drive.google.com/...">
+        
+        <button id="btn-publish" class="btn-action">Publish Live</button>
+        <button id="btn-cancel-edit" class="btn-action hidden" style="background-color: #7f8c8d; margin-top: 10px;">Cancel Edit</button>
       </form>
-      <p id="login-error" style="color: red; margin-top: 10px;"></p>
+      <p id="publish-status" style="margin-top: 15px; font-weight: bold; text-align: center;"></p>
     </div>
 
-    <!-- PUBLISH FORM -->
-    <div id="admin-section" class="hidden">
-      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 20px;">
-        <h2 style="color: #008080; margin: 0;">Publish New Article</h2>
-        <button id="btn-logout" class="logout-btn">Logout</button>
+    <!-- Right Column: List -->
+    <div class="dashboard-panel" style="flex: 2;">
+      <h2>Manage Live Publications</h2>
+      <div id="publications-list">
+        <p>Loading...</p>
       </div>
-      
-      <!-- Updated Form Labels for Microsoft Workflow -->
-      <form id="publish-form" onsubmit="return false;">
-        <label>Article Title</label>
-        <input type="text" id="post-title" placeholder="e.g., Understanding Climate Justice" required>
-        
-        <label>Author Name</label>
-        <input type="text" id="post-author" placeholder="e.g., Barnabas Tanui" required>
-        
-        <label>Cover Image Link (Public URL)</label>
-        <input type="text" id="post-image" placeholder="Paste image URL here..." required>
-        
-        <label>Article Summary / Excerpt</label>
-        <textarea id="post-content" placeholder="Write a short summary that appears on the card..." rows="5" required></textarea>
-        
-        <label>Full Article Document (Link to OneDrive / SharePoint)</label>
-        <input type="text" id="post-link" placeholder="Paste OneDrive 'Anyone with the link' URL here...">
-        
-        <button id="btn-publish">Publish Live</button>
-      </form>
-      <p id="publish-status" style="color: green; margin-top: 15px; font-weight: bold; text-align: center;"></p>
     </div>
+    
   </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, getDocs, deleteDoc, updateDoc, doc, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBByojxbcXlEEFA6u4JT_WzKcUrvnK0yFg",
@@ -92,53 +117,146 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    const loginSection = document.getElementById('login-section');
-    const adminSection = document.getElementById('admin-section');
-    
+    let editingPostId = null; // Tracks if we are editing or creating
+
+    // Monitor Auth State
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        loginSection.classList.add('hidden');
-        adminSection.classList.remove('hidden');
+        document.getElementById('login-section').classList.add('hidden');
+        document.getElementById('admin-section').classList.remove('hidden');
+        document.getElementById('btn-logout').classList.remove('hidden');
+        loadPublications();
       } else {
-        loginSection.classList.remove('hidden');
-        adminSection.classList.add('hidden');
+        document.getElementById('login-section').classList.remove('hidden');
+        document.getElementById('admin-section').classList.add('hidden');
+        document.getElementById('btn-logout').classList.add('hidden');
       }
     });
 
+    // Login & Logout
     document.getElementById('btn-login').addEventListener('click', () => {
-      const email = document.getElementById('login-email').value;
-      const password = document.getElementById('login-password').value;
-      signInWithEmailAndPassword(auth, email, password)
-        .catch(err => document.getElementById('login-error').innerText = "Login failed: " + err.message);
+      signInWithEmailAndPassword(auth, document.getElementById('login-email').value, document.getElementById('login-password').value)
+        .catch(err => document.getElementById('login-error').innerText = err.message);
     });
 
-    document.getElementById('btn-logout').addEventListener('click', () => signOut(auth));
+    document.getElementById('btn-logout').addEventListener('click', () => {
+      signOut(auth).then(() => location.reload());
+    });
 
+    // Load Publications into Dashboard
+    async function loadPublications() {
+      const listContainer = document.getElementById('publications-list');
+      listContainer.innerHTML = "<p>Loading updates...</p>";
+      
+      const q = query(collection(db, "publications"), orderBy("createdAt", "desc"));
+      const querySnapshot = await getDocs(q);
+      
+      listContainer.innerHTML = "";
+      
+      if(querySnapshot.empty) {
+        listContainer.innerHTML = "<p>No publications found.</p>";
+        return;
+      }
+
+      querySnapshot.forEach((docSnap) => {
+        const data = docSnap.data();
+        const div = document.createElement('div');
+        div.className = "pub-item";
+        
+        // Pass data safely to inline functions via dataset/JSON
+        const safeData = encodeURIComponent(JSON.stringify(data));
+        
+        div.innerHTML = `
+          <div class="pub-title">${data.title} <br><span style="font-size:0.8rem; color:#666;">By ${data.author}</span></div>
+          <div class="action-buttons">
+            <button class="btn-edit" onclick="editPub('${docSnap.id}', '${safeData}')">Edit</button>
+            <button class="btn-delete" onclick="deletePub('${docSnap.id}')">Delete</button>
+          </div>
+        `;
+        listContainer.appendChild(div);
+      });
+    }
+
+    // Delete Logic
+    window.deletePub = async (id) => {
+      if (confirm("Permanently delete this publication? This action cannot be undone.")) {
+        await deleteDoc(doc(db, "publications", id));
+        loadPublications();
+      }
+    };
+
+    // Edit Logic (Populates form)
+    window.editPub = (id, encodedData) => {
+      const data = JSON.parse(decodeURIComponent(encodedData));
+      editingPostId = id;
+      
+      document.getElementById('form-title').innerText = "Edit Publication";
+      document.getElementById('post-title').value = data.title;
+      document.getElementById('post-author').value = data.author;
+      document.getElementById('post-image').value = data.image === 'images/grow.jpeg' ? '' : data.image; // Hide default link during edit
+      document.getElementById('post-content').value = data.content;
+      document.getElementById('post-link').value = data.link === '#' ? '' : data.link;
+      
+      document.getElementById('btn-publish').innerText = "Update Publication";
+      document.getElementById('btn-cancel-edit').classList.remove('hidden');
+      
+      window.scrollTo(0, 0); // Scroll up to the form
+    };
+
+    // Cancel Edit Logic
+    document.getElementById('btn-cancel-edit').addEventListener('click', () => {
+      editingPostId = null;
+      document.getElementById('form-title').innerText = "Create New Publication";
+      document.getElementById('btn-publish').innerText = "Publish Live";
+      document.getElementById('publish-form').reset();
+      document.getElementById('btn-cancel-edit').classList.add('hidden');
+    });
+
+    // Publish / Update Logic
     document.getElementById('btn-publish').addEventListener('click', async () => {
       const title = document.getElementById('post-title').value;
       const author = document.getElementById('post-author').value;
-      const image = document.getElementById('post-image').value;
       const content = document.getElementById('post-content').value;
-      const link = document.getElementById('post-link').value || '#';
+      
+      // OPTIONAL LOGIC: If blank, assign defaults
+      let image = document.getElementById('post-image').value;
+      if (!image.trim()) { image = 'images/grow.jpeg'; }
+      
+      let link = document.getElementById('post-link').value;
+      if (!link.trim()) { link = '#'; }
+
       const statusText = document.getElementById('publish-status');
 
-      if (!title || !author || !content || !image) {
+      if (!title || !author || !content) {
         statusText.style.color = "red";
-        statusText.innerText = "Please fill in all required fields.";
+        statusText.innerText = "Title, Author, and Summary are strictly required.";
         return;
       }
 
       statusText.style.color = "orange";
-      statusText.innerText = "Publishing...";
+      statusText.innerText = editingPostId ? "Updating..." : "Publishing...";
 
       try {
-        await addDoc(collection(db, "publications"), {
-          title, author, image, content, link,
-          createdAt: serverTimestamp()
-        });
+        if (editingPostId) {
+          // UPDATE EXISTING
+          await updateDoc(doc(db, "publications", editingPostId), {
+            title, author, image, content, link
+            // Intentionally omitting createdAt to keep original date
+          });
+          statusText.innerText = "Updated successfully!";
+        } else {
+          // CREATE NEW
+          await addDoc(collection(db, "publications"), {
+            title, author, image, content, link,
+            createdAt: serverTimestamp()
+          });
+          statusText.innerText = "Published successfully and live!";
+        }
+        
         statusText.style.color = "green";
-        statusText.innerText = "Published successfully and live!";
-        document.getElementById('publish-form').reset();
+        document.getElementById('btn-cancel-edit').click(); // Resets form state
+        loadPublications();
+        
       } catch (error) {
         statusText.style.color = "red";
         statusText.innerText = "Error: " + error.message;
